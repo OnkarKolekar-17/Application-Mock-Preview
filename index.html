@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpecNova</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-okaidia.min.css">
+    <style>
+:root {
+    /* Enhanced color palette with gradient-friendly colors */
+    --primary: #4361ee;
+    --primary-light: #4895ef;
+    --primary-dark: #3a0ca3;
+    --secondary: #7209b7;
+    --accent: #4cc9f0;
+    --dark: #1b263b;
+    --light: #f8f9fa;
+    --success: #06d6a0;
+    --warning: #f8961e;
+    --danger: #ef476f;
+    --code-bg: #1e1e1e;
+    
+    /* Add shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+    
+    /* Add transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f5f7ff;
+    color: var(--dark);
+    line-height: 1.6;
+    background-image: linear-gradient(135deg, #f5f7ff 0%, #ffffff 100%);
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Enhanced Header */
+header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+    position: relative;
+    padding: 1.5rem 0;
+}
+
+header::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    left: 0;
+    right: 0;
+    height: 150px;
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary), var(--primary-light));
+    transform: skewY(-2deg);
+    z-index: -1;
+    border-radius: 0 0 50% 50% / 20px;
+    box-shadow: var(--shadow-lg);
+    opacity: 0.8;
+}
+
+header h1 {
+    font-size: 3.2rem;
+    letter-spacing: -0.5px;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    display: inline-block;
+    font-weight: 800;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    /* Add a subtle white outline */
+    filter: drop-shadow(0 0 1px rgba(255, 255, 255, 1))
+           drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+    z-index: 2;
+}
+
+header p {
+    font-size: 1.2rem;
+    color: var(--dark);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Enhanced Chat Container */
+.ai-assistant {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.chat-container {
+    flex: 1;
+    background: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 600px;
+    transition: all var(--transition-normal);
+    transform: translateY(0);
+    border: 1px solid rgba(67, 97, 238, 0.1);
+}
+
+.chat-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(67, 97, 238, 0.15);
+}
+
+.chat-header {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.chat-header::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+    opacity: 0.3;
+}
+
+.chat-header .ai-icon {
+    width: 36px;
+    height: 36px;
+    background-color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 2;
+}
+
+.chat-header h3 {
+    font-weight: 600;
+    font-size: 1.25rem;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 2;
+}
+
+/* Enhanced Messages */
+.chat-messages {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    background-color: #fafbff;
+    background-image: 
+        radial-gradient(circle at 25px 25px, rgba(67, 97, 238, 0.03) 2%, transparent 0%),
+        radial-gradient(circle at 75px 75px, rgba(67, 97, 238, 0.03) 2%, transparent 0%);
+    background-size: 100px 100px;
+}
+
+.message {
+    margin-bottom: 1.5rem;
+    max-width: 80%;
+    animation: messageAppear 0.3s ease-out forwards;
+}
+
+@keyframes messageAppear {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ai-message {
+    align-self: flex-start;
+    background: white;
+    padding: 1.2rem;
+    border-radius: 2px 18px 18px 18px;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    margin-right: auto;
+    border-left: 4px solid var(--primary);
+}
+
+.ai-message ul {
+    margin-top: 0.8rem;
+    margin-bottom: 0.8rem;
+    padding-left: 1.5rem;
+}
+
+.ai-message li {
+    margin-bottom: 0.5rem;
+}
+
+.user-message {
+    align-self: flex-end;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    padding: 1.2rem;
+    border-radius: 18px 2px 18px 18px;
+    margin-left: auto;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+}
+
+/* Enhanced Input Area */
+.chat-input {
+    display: flex;
+    padding: 1rem;
+    gap: 0.8rem;
+    background: white;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.chat-input input {
+    flex: 1;
+    min-width: 150px;
+    padding: 0.8rem 1.2rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    font-size: 1rem;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all var(--transition-normal);
+}
+
+.chat-input input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+}
+
+.file-upload-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.file-upload-label {
+    white-space: nowrap;
+    padding: 0.8rem 1.2rem;
+    background: rgba(67, 97, 238, 0.1);
+    border-radius: 12px;
+    color: var(--primary);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.file-upload-label:hover {
+    background: rgba(67, 97, 238, 0.2);
+}
+
+#file-upload {
+    display: none;
+}
+
+/* Enhanced Buttons */
+.btn {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all var(--transition-normal);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: -100%;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transition: all 0.8s ease;
+}
+
+.btn:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(67, 97, 238, 0.25);
+}
+
+.btn:hover::after {
+    left: 100%;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    box-shadow: none;
+}
+
+.btn-outline:hover {
+    background: rgba(67, 97, 238, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.1);
+}
+
+/* Enhanced Table */
+.requirements-container {
+    background: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    margin-bottom: 2.5rem;
+    border: 1px solid rgba(67, 97, 238, 0.1);
+    transition: all var(--transition-normal);
+}
+
+.requirements-container:hover {
+    box-shadow: 0 15px 35px rgba(67, 97, 238, 0.15);
+}
+
+.requirements-header {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.requirements-header::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+    opacity: 0.3;
+}
+
+.requirements-header h2 {
+    font-size: 1.5rem;
+    margin-right: auto;
+    position: relative;
+    z-index: 2;
+    font-weight: 600;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 1.2rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background: #f5f7ff;
+    font-weight: 600;
+    color: var(--dark);
+    position: sticky;
+    top: 0;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+tr {
+    transition: all var(--transition-normal);
+}
+
+tr:hover {
+    background: #f0f4ff;
+}
+
+.priority-high {
+    color: var(--danger);
+    font-weight: 600;
+}
+
+.priority-medium {
+    color: var(--warning);
+    font-weight: 600;
+}
+
+.priority-low {
+    color: var(--success);
+    font-weight: 600;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-approved {
+    background: rgba(6, 214, 160, 0.2);
+    color: var(--success);
+    border: 1px solid rgba(6, 214, 160, 0.3);
+}
+
+.status-pending {
+    background: rgba(248, 150, 30, 0.2);
+    color: var(--warning);
+    border: 1px solid rgba(248, 150, 30, 0.3);
+}
+
+.status-rejected {
+    background: rgba(239, 71, 111, 0.2);
+    color: var(--danger);
+    border: 1px solid rgba(239, 71, 111, 0.3);
+}
+
+/* Export Buttons */
+.actions {
+    display: flex;
+    gap: 0.8rem;
+    position: relative;
+    z-index: 2;
+}
+
+.export-buttons {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.export-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all var(--transition-normal);
+    border: none;
+    cursor: pointer;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.export-btn::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: -100%;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transition: all 0.8s ease;
+}
+
+.export-btn:hover::after {
+    left: 100%;
+}
+
+.export-word {
+    background: linear-gradient(135deg, #2b579a, #4a7aba);
+}
+
+.export-word:hover {
+    background: linear-gradient(135deg, #1e4b8b, #3963a0);
+    transform: translateY(-2px);
+}
+
+.export-excel {
+    background: linear-gradient(135deg, #217346, #3c9a64);
+}
+
+.export-excel:hover {
+    background: linear-gradient(135deg, #1a6239, #2d8550);
+    transform: translateY(-2px);
+}
+
+/* Enhanced Preview Sections */
+.preview-container {
+    background: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    padding: 1.5rem;
+    margin-bottom: 2.5rem;
+    border: 1px solid rgba(67, 97, 238, 0.1);
+    transition: all var(--transition-normal);
+}
+
+.preview-container:hover {
+    box-shadow: 0 15px 35px rgba(67, 97, 238, 0.15);
+}
+
+.preview-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.preview-header h2 {
+    font-size: 1.5rem;
+    color: var(--dark);
+    margin-right: auto;
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+}
+
+/* Enhanced Tabs */
+.preview-tabs {
+    display: flex;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    gap: 0.5rem;
+}
+
+.tab {
+    padding: 0.8rem 1.5rem;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all var(--transition-normal);
+    font-weight: 500;
+    color: #777;
+    position: relative;
+    z-index: 1;
+}
+
+.tab:hover {
+    color: var(--primary);
+}
+
+.tab.active {
+    border-bottom-color: var(--primary);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.tab.active::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background: var(--primary);
+    opacity: 0.1;
+    border-radius: 8px 8px 0 0;
+    z-index: -1;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Enhanced Preview Content */
+.preview-content {
+    background: #f8faff;
+    border-radius: 12px;
+    padding: 1.8rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(67, 97, 238, 0.1);
+}
+
+.preview-content h3 {
+    color: var(--primary);
+    margin-bottom: 1.2rem;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.preview-content h3::before {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background: var(--primary);
+    border-radius: 50%;
+}
+
+.preview-text {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    font-family: 'Courier New', Courier, monospace;
+    white-space: pre-wrap;
+    border: 1px solid #eee;
+    max-height: 400px;
+    overflow-y: auto;
+    box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Code Generation Area */
+.codegen-options {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.language-selector
+ {
+    padding: 0.7rem 1.2rem;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    background: white;
+    font-size: 0.95rem;
+    min-width: 150px;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-normal);
+}
+
+.language-selector:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+}
+
+.generate-code {
+    background: linear-gradient(135deg, var(--success), #20d0c2);
+}
+
+.generate-code:hover {
+    background: linear-gradient(135deg, #06b085, #1ab5a8);
+}
+
+.generated-code-container {
+    position: relative;
+    margin-top: 1.5rem;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.generated-code {
+    background: var(--code-bg);
+    border-radius: 12px;
+    padding: 1.8rem;
+    color: #f8f8f8;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    overflow-x: auto;
+    max-height: 400px;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.code-actions {
+    position: absolute;
+    top: 0.8rem;
+    right: 0.8rem;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 10;
+}
+
+.code-actions button {
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.code-actions button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Enhanced Feedback Section */
+.code-analysis {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: #fff8e6;
+    border-radius: 10px;
+    border-left: 4px solid var(--warning);
+    box-shadow: var(--shadow-sm);
+}
+
+.code-analysis h4 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1rem;
+    color: #d97706;
+}
+
+.code-issue {
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px dashed rgba(248, 150, 30, 0.2);
+}
+
+.code-issue:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.issue-severity-high {
+    color: var(--danger);
+    font-weight: bold;
+}
+
+.issue-severity-medium {
+    color: var(--warning);
+}
+
+.feedback-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.feedback-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1.2rem;
+    padding: 1.2rem;
+    background: #fafbff;
+    border-radius: 12px;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.feedback-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.feedback-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--warning);
+    color: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    flex-shrink: 0;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 10px rgba(248, 150, 30, 0.3);
+}
+
+.feedback-content {
+    flex: 1;
+}
+
+.feedback-content h4 {
+    margin-bottom: 0.5rem;
+    color: var(--dark);
+    font-weight: 600;
+}
+
+/* Animation Effects */
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 4px 12px rgba(67, 97, 238, 0.2); }
+    50% { transform: scale(1.05); box-shadow: 0 8px 24px rgba(67, 97, 238, 0.25); }
+    100% { transform: scale(1); box-shadow: 0 4px 12px rgba(67, 97, 238, 0.2); }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Modal Styling */
+.confirmation-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: all var(--transition-normal);
+}
+
+.confirmation-modal.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 16px;
+    padding: 2.5rem;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+    transform: translateY(20px) scale(0.95);
+    transition: all var(--transition-normal);
+}
+
+.confirmation-modal.active .modal-content {
+    transform: translateY(0) scale(1);
+}
+
+.modal-header {
+    margin-bottom: 1.8rem;
+}
+
+.modal-header h3 {
+    font-size: 1.8rem;
+    color: var(--primary);
+    position: relative;
+    display: inline-block;
+}
+
+.modal-header h3::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 3px;
+}
+
+.modal-body {
+    margin-bottom: 2rem;
+}
+
+.modal-body input, 
+.modal-body textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all var(--transition-normal);
+}
+
+.modal-body input:focus,
+.modal-body textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+}
+
+.modal-body label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--dark);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .ai-assistant {
+        flex-direction: column;
+    }
+    
+    .requirements-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .actions {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+    
+    .export-buttons {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    header h1 {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .preview-tabs {
+        flex-wrap: wrap;
+    }
+    
+    .tab {
+        flex: 1 0 40%;
+        text-align: center;
+    }
+    
+    .preview-content {
+        padding: 1rem;
+    }
+    
+    .feedback-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SpecNova</h1>
+            <p>Transform unstructured inputs into actionable requirements with AI assistance</p>
+        </header>
+
+        <div class="ai-assistant">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="ai-icon">AI</div>
+                    <h3>Requirement Assistant</h3>
+                </div>
+                <div class="chat-messages">
+                    <div class="message ai-message">
+                        <p>Hello! I'm your AI requirement assistant. You can upload documents, paste text, or describe your project needs, and I'll help extract and organize requirements.</p>
+                    </div>
+                    <div class="message user-message">
+                        <p>I need to build a patient management system for a clinic. Here are some notes: The system should allow patients to register online, book appointments, and view their medical history. Doctors should be able to manage their schedules.</p>
+                    </div>
+                    <div class="message ai-message">
+                        <p>Thank you for the information. I've identified several key requirements:</p>
+                        <ul>
+                            <li>Patient registration with personal and medical details</li>
+                            <li>Online appointment booking system</li>
+                            <li>Medical history viewer</li>
+                            <li>Doctor schedule management</li>
+                        </ul>
+                        <p>I notice we might be missing some non-functional requirements. Should we discuss:</p>
+                        <ul>
+                            <li>Expected number of concurrent users?</li>
+                            <li>Data privacy and compliance requirements?</li>
+                            <li>Integration with existing systems?</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" placeholder="Ask about requirements or provide more details...">
+                    <div class="file-upload-wrapper">
+                        <label for="file-upload" class="file-upload-label">
+                            <i class="fas fa-paperclip"></i> Upload
+                        </label>
+                        <input type="file" id="file-upload">
+                    </div>
+                    <button class="btn">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="requirements-container">
+            <div class="requirements-header">
+                <h2>Generated Requirements</h2>
+                <div class="actions">
+                    <div class="export-buttons">
+                        <button class="export-btn export-word">
+                            <i class="fas fa-file-word"></i> Export to Word
+                        </button>
+                        <button class="export-btn export-excel">
+                            <i class="fas fa-file-excel"></i> Export to Excel
+                        </button>
+                    </div>
+                    <button class="btn">Preview in Jira/Confluence</button>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Type</th>
+                        <th>Priority</th>
+                        <th>MoSCoW</th>
+                        <th>Status</th>
+                        <th>Select</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>FR-001</td>
+                        <td>Patient Registration</td>
+                        <td>System shall allow new patients to register with personal details (name, contact, address) and basic medical history</td>
+                        <td>Functional</td>
+                        <td class="priority-high">1</td>
+                        <td>Must</td>
+                        <td><span class="status-badge status-approved">Approved</span></td>
+                        <td><input type="checkbox" checked></td>
+                    </tr>
+                    <tr>
+                        <td>FR-002</td>
+                        <td>Appointment Booking</td>
+                        <td>Patients shall be able to book, reschedule, and cancel appointments through the online portal</td>
+                        <td>Functional</td>
+                        <td class="priority-high">2</td>
+                        <td>Must</td>
+                        <td><span class="status-badge status-approved">Approved</span></td>
+                        <td><input type="checkbox" checked></td>
+                    </tr>
+                    <tr>
+                        <td>FR-003</td>
+                        <td>Medical History Viewer</td>
+                        <td>Patients shall be able to view their medical history including past appointments, prescriptions, and test results</td>
+                        <td>Functional</td>
+                        <td class="priority-medium">3</td>
+                        <td>Should</td>
+                        <td><span class="status-badge status-pending">Review Needed</span></td>
+                        <td><input type="checkbox" checked></td>
+                    </tr>
+                    <tr>
+                        <td>NFR-001</td>
+                        <td>System Availability</td>
+                        <td>System shall be available 99.9% during business hours (8AM-8PM)</td>
+                        <td>Non-Functional</td>
+                        <td class="priority-high">1</td>
+                        <td>Must</td>
+                        <td><span class="status-badge status-approved">Approved</span></td>
+                        <td><input type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <td>NFR-002</td>
+                        <td>Data Security</td>
+                        <td>All patient data shall be encrypted at rest and in transit (HIPAA compliance)</td>
+                        <td>Non-Functional</td>
+                        <td class="priority-high">1</td>
+                        <td>Must</td>
+                        <td><span class="status-badge status-approved">Approved</span></td>
+                        <td><input type="checkbox"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="preview-container">
+            <div class="preview-header">
+                <h2>Jira & Confluence Integration</h2>
+            </div>
+            
+            <div class="preview-tabs">
+                <div class="tab active" data-tab="jira">Jira Tickets</div>
+                <div class="tab" data-tab="confluence">Confluence Docs</div>
+                <div class="tab" data-tab="codegen">Code Generation</div>
+                <div class="tab" data-tab="feedback">AI Feedback</div>
+            </div>
+            
+            <div class="tab-content active" id="jira">
+                <div class="preview-content">
+                    <h3>Jira Backlog Items Preview</h3>
+                    <div class="preview-text">
+[PM-101] Patient Registration (Must Have)
+- Description: Implement patient registration with personal details and medical history
+- Acceptance Criteria:
+  * Form with required fields (name, DOB, contact, address)
+  * Medical history section
+  * Data validation
+  * HIPAA compliance
+- Story Points: 5
+- Priority: Highest
+- Labels: patient, registration
+
+[PM-102] Appointment Booking (Must Have)
+- Description: Online appointment booking system
+- Acceptance Criteria:
+  * Calendar interface
+  * Doctor selection
+  * Time slot availability
+  * Email confirmation
+- Story Points: 8
+- Priority: High
+- Labels: appointment, booking
+                    </div>
+                </div>
+                <div class="feedback-actions">
+                    <button class="btn">Edit in Jira</button>
+                    <button class="btn pulse" id="pushToJiraBtn">Push Selected to Jira</button>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="confluence">
+                <div class="preview-content">
+                    <h3>Confluence Requirements Document</h3>
+                    <div class="confluence-preview">
+                        <div class="version-info">Version 1.0 | Last updated: 2023-11-16 by AI Assistant</div>
+                        
+                        <h4>Patient Management System Requirements</h4>
+                        <p>This document outlines the functional and non-functional requirements for the Patient Management System.</p>
+                        
+                        <h4>Functional Requirements</h4>
+                        <ul>
+                            <li><strong>FR-001 Patient Registration</strong>: System shall allow new patients to register with personal and medical details</li>
+                            <li><strong>FR-002 Appointment Booking</strong>: Patients can book, modify, or cancel appointments via web portal</li>
+                            <li><strong>FR-003 Medical History</strong>: Secure access to patient medical records with audit logging</li>
+                        </ul>
+                        
+                        <h4>Non-Functional Requirements</h4>
+                        <ul>
+                            <li><strong>NFR-001 Availability</strong>: 99.9% uptime during business hours (8AM-8PM)</li>
+                            <li><strong>NFR-002 Security</strong>: HIPAA compliant data encryption for all PHI</li>
+                        </ul>
+                        
+                        <h4>Open Questions</h4>
+                        <ul>
+                            <li>Integration requirements with existing EHR systems?</li>
+                            <li>Mobile app requirements for patient portal?</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="feedback-actions">
+                    <button class="btn">Edit Document</button>
+                    <button class="btn pulse">Publish to Confluence</button>
+                </div>
+            </div>
+            
+
+            <div class="tab-content" id="codegen">
+                <div class="preview-content">
+                    <h3>Generate Implementation Code</h3>
+                    <div class="codegen-options">
+                        <select class="language-selector">
+                            <option value="python">Python</option>
+                            <option value="java">Java</option>
+                            <option value="typescript">TypeScript</option>
+                            <option value="csharp">C#</option>
+                        </select>
+                        
+                        <button class="btn generate-code">
+                            <i class="fas fa-code"></i> Generate Code
+                        </button>
+                    </div>
+                    
+                    <div class="generated-code-container">
+                        <div class="code-actions">
+                            <button class="btn copy-code">
+                                <i class="far fa-copy"></i> Copy
+                            </button>
+                            <button class="btn push-repo">
+                                <i class="fab fa-github"></i> Push
+                            </button>
+                        </div>
+                        <pre class="generated-code"><code class="language-python"># Select requirements and click "Generate Code"
+# Example output will appear here
+
+class PatientRegistration:
+    def __init__(self):
+        self.required_fields = ['name', 'dob', 'contact']
+    
+    def validate(self, data: dict) -> bool:
+        return all(field in data for field in self.required_fields)</code></pre>
+                    </div>
+                    
+                    <div class="code-analysis">
+                        <h4><i class="fas fa-search"></i> Code Analysis</h4>
+                        <div class="code-issue">
+                            <i class="fas fa-exclamation-triangle issue-severity-high"></i>
+                            <div>
+                                <strong>Security: Missing input sanitization</strong>
+                                <p>Requirement: NFR-002 (Data Security)</p>
+                            </div>
+                        </div>
+                        <div class="code-issue">
+                            <i class="fas fa-info-circle issue-severity-medium"></i>
+                            <div>
+                                <strong>Style: Inconsistent naming</strong>
+                                <p>Follow PEP-8 naming conventions</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="feedback-actions">
+                    <button class="btn">
+                        <i class="fas fa-redo"></i> Regenerate
+                    </button>
+                    <button class="btn">
+                        <i class="fas fa-download"></i> Export as File
+                    </button>
+                </div>
+            </div>
+
+            <div class="tab-content" id="feedback">
+                <div class="preview-content">
+                    <h3>AI Analysis & Recommendations</h3>
+                    
+                    <div class="feedback-item">
+                        <div class="feedback-icon">⚠️</div>
+                        <div class="feedback-content">
+                            <h4>Potential Gap: Appointment Reminders</h4>
+                            <p>The current requirements don't specify any notification system for upcoming appointments. Based on healthcare industry standards, this is typically a critical feature for reducing no-shows.</p>
+                        </div>
+                        <div class="feedback-actions">
+                            <button class="btn">Ignore</button>
+                            <button class="btn">Add Requirement</button>
+                        </div>
+                    </div>
+                    
+                    <div class="feedback-item">
+                        <div class="feedback-icon">ℹ️</div>
+                        <div class="feedback-content">
+                            <h4>Regulatory Compliance Note</h4>
+                            <p>I've automatically added HIPAA compliance requirements based on the healthcare context. Would you like me to include additional regional regulations (GDPR for European patients)?</p>
+                        </div>
+                        <div class="feedback-actions">
+                            <button class="btn">No Thanks</button>
+                            <button class="btn">Add GDPR</button>
+                        </div>
+                    </div>
+                    
+                    <div class="feedback-item">
+                        <div class="feedback-icon">🔍</div>
+                        <div class="feedback-content">
+                            <h4>Test Case Suggestions</h4>
+                            <p>I can generate test cases for these requirements. Would you like me to create test scenarios for the patient registration workflow?</p>
+                        </div>
+                        <div class="feedback-actions">
+                            <button class="btn">Later</button>
+                            <button class="btn">Generate Tests</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="confirmation-modal" id="repo-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Push to Repository</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Repository URL</label>
+                    <input type="text" placeholder="https://github.com/your-repo" class="repo-url">
+                </div>
+                <div class="form-group">
+                    <label>Branch Name</label>
+                    <input type="text" placeholder="feat/patient-registration" class="branch-name">
+                </div>
+                <div class="form-group">
+                    <label>Commit Message</label>
+                    <textarea class="commit-message">Generated code for requirements: FR-001, NFR-002</textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn cancel-repo">Cancel</button>
+                <button class="btn confirm-repo">Confirm Push</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-typescript.min.js"></script>
+    
+    <script>
+        // Tab switching functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.getAttribute('data-tab')).classList.add('active');
+            });
+        });
+        
+        // File upload handling
+        document.getElementById('file-upload').addEventListener('change', function(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                const fileName = files[0].name;
+                const fileType = fileName.split('.').pop().toUpperCase();
+                
+                const chatMessages = document.querySelector('.chat-messages');
+                const userMessage = document.createElement('div');
+                userMessage.className = 'message user-message';
+                userMessage.innerHTML = `
+                    <p><i class="fas fa-file-upload"></i> Uploaded document: ${fileName} (${fileType})</p>
+                `;
+                chatMessages.appendChild(userMessage);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                setTimeout(() => {
+                    const aiMessage = document.createElement('div');
+                    aiMessage.className = 'message ai-message';
+                    aiMessage.innerHTML = `
+                        <p>I've processed your ${fileType} document and extracted 5 key requirements:</p>
+                        <ul>
+                            <li>Patient registration workflow</li>
+                            <li>Appointment scheduling logic</li>
+                            <li>Medical history access controls</li>
+                            <li>HIPAA compliance requirements</li>
+                            <li>Reporting module specifications</li>
+                        </ul>
+                        <p>Would you like me to organize these into standard requirement format?</p>
+                    `;
+                    chatMessages.appendChild(aiMessage);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 1500);
+            }
+        });
+
+        // Jira push confirmation
+        document.getElementById('pushToJiraBtn').addEventListener('click', () => {
+            document.querySelector('.confirmation-modal').classList.add('active');
+        });
+        
+        // Close modal when clicking cancel
+        document.querySelector('.modal-footer .btn').addEventListener('click', () => {
+            document.querySelector('.confirmation-modal').classList.remove('active');
+        });
+        
+        // Simulate successful Jira push
+        document.querySelector('.modal-footer .btn').addEventListener('click', () => {
+            const modal = document.querySelector('.confirmation-modal');
+            modal.classList.remove('active');
+            
+            const jiraBtn = document.getElementById('pushToJiraBtn');
+            jiraBtn.textContent = '✓ Pushed to Jira';
+            jiraBtn.disabled = true;
+            jiraBtn.classList.remove('pulse');
+            
+            const successMsg = document.createElement('div');
+            successMsg.textContent = '5 items successfully created in Jira!';
+            successMsg.style.background = '#4cc9f0';
+            successMsg.style.color = 'white';
+            successMsg.style.padding = '1rem';
+            successMsg.style.borderRadius = '4px';
+            successMsg.style.marginTop = '1rem';
+            successMsg.style.textAlign = 'center';
+            successMsg.style.animation = 'fadeOut 3s forwards 2s';
+            
+            document.querySelector('.tab-content.active').appendChild(successMsg);
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeOut {
+                    to { opacity: 0; height: 0; margin: 0; padding: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+        document.querySelector('.generate-code').addEventListener('click', function() {
+            // Simulate API call
+            const language = document.querySelector('.language-selector').value;
+            const sampleCode = {
+                python: `# FR-001: Patient Registration\nclass PatientRegistration:\n    def __init__(self):\n        self.required_fields = ['name', 'dob', 'contact']\n    \n    def validate(self, data: dict) -> bool:\n        """Validates HIPAA-compliant patient data"""\n        return all(field in data for field in self.required_fields)\n        \n    # NFR-002: Data Encryption\n    def encrypt(self, data: str) -> str:\n        import hashlib\n        return hashlib.sha256(data.encode()).hexdigest()`,
+                
+                java: `// FR-001: Patient Registration\npublic class PatientRegistration {\n    private String[] requiredFields = {"name", "dob", "contact"};\n    \n    public boolean validate(Map<String, String> data) {\n        // Validates HIPAA-compliant patient data\n        return Arrays.stream(requiredFields)\n            .allMatch(data::containsKey);\n    }\n}`,
+                
+                typescript: `// FR-001: Patient Registration\nclass PatientRegistration {\n    private requiredFields: string[] = ['name', 'dob', 'contact'];\n\n    validate(data: Record<string, string>): boolean {\n        // Validates HIPAA-compliant patient data\n        return this.requiredFields.every(field => field in data);\n    }\n}`
+            };
+            
+            const codeBlock = document.querySelector('.generated-code');
+            codeBlock.innerHTML = sampleCode[language];
+            Prism.highlightElement(codeBlock);
+            
+            // Enable framework selector
+            // const frameworkSelector = document.querySelector('.framework-selector');
+            // frameworkSelector.innerHTML = getFrameworks(language);
+            // frameworkSelector.disabled = false;
+        });
+        
+        // function getFrameworks(language) {
+        //     const frameworks = {
+        //         python: ['Django', 'Flask', 'FastAPI'],
+        //         java: ['Spring Boot', 'Jakarta EE'],
+        //         typescript: ['Angular', 'React', 'Express']
+        //     };
+            
+        //     return ['<option>Select framework</option>']
+        //         .concat(frameworks[language]?.map(f => `<option>${f}</option>`) || [])
+        //         .join('');
+        // }
+        
+        // Copy code functionality
+        document.querySelector('.copy-code').addEventListener('click', function() {
+            const code = document.querySelector('.generated-code').textContent;
+            navigator.clipboard.writeText(code);
+            alert('Code copied to clipboard!');
+        });
+        
+        // Push to repo modal
+        document.querySelector('.push-repo').addEventListener('click', function() {
+            document.getElementById('repo-modal').classList.add('active');
+        });
+        
+        document.querySelector('.cancel-repo').addEventListener('click', function() {
+            document.getElementById('repo-modal').classList.remove('active');
+        });
+    </script>
+</body>
+</html>
